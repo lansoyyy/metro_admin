@@ -1,5 +1,6 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
+import 'package:metro_admin/screens/tabs/dashboard_tab.dart';
 import 'package:metro_admin/utils/colors.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -80,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                       child: Center(
                         child: Image.asset(
                           'assets/images/logo.png',
-                          height: 180,
+                          height: 150,
                         ),
                       ),
                     ),
@@ -93,7 +94,7 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: PageView(
               controller: page,
-              children: const [],
+              children: const [DashboardTab()],
             ),
           ),
         ],

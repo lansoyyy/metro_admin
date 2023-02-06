@@ -2,12 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 
-PreferredSizeWidget customAppbar(String title) {
+PreferredSizeWidget customAppbar() {
   return AppBar(
-    title: TextRegular(text: title, fontSize: 18, color: Colors.white),
-    centerTitle: true,
     foregroundColor: Colors.white,
     elevation: 0,
-    backgroundColor: primaryRed,
+    backgroundColor: secondaryRed,
+    actions: [
+      IconButton(onPressed: (() {}), icon: const Icon(Icons.search)),
+      IconButton(onPressed: (() {}), icon: const Icon(Icons.email)),
+      IconButton(onPressed: (() {}), icon: const Icon(Icons.notifications)),
+      const SizedBox(
+        width: 30,
+      ),
+      const Icon(Icons.account_circle),
+      const SizedBox(
+        width: 10,
+      ),
+      Center(
+          child: TextBold(
+              text: 'TAXI REGION 2', fontSize: 16, color: Colors.white)),
+      const SizedBox(
+        width: 20,
+      ),
+    ],
   );
 }

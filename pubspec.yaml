@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   fluttertoast:
   easy_sidemenu: ^0.4.1
+  responsive_framework:
+  percent_indicator:
 
 dev_dependencies:
   flutter_test:
