@@ -38,6 +38,7 @@ dependencies:
   easy_sidemenu: ^0.4.1
   responsive_framework:
   percent_indicator:
+  pie_chart:
 
 dev_dependencies:
   flutter_test:
