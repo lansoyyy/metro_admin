@@ -1,10 +1,103 @@
+import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
+import 'package:metro_admin/utils/colors.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  PageController page = PageController();
+  SideMenuController page1 = SideMenuController();
+
+  var drawerList = [
+    'DASHBOARD',
+    'LIVE MAP',
+    'BOOKINGS',
+    'SALES',
+    'CARS',
+    'DRIVERS',
+    'PASSENGERS',
+    'SETTINGS',
+  ];
+
+  var icons = [
+    Icons.dashboard,
+    Icons.location_on_rounded,
+    Icons.local_taxi,
+    Icons.stacked_line_chart_sharp,
+    Icons.directions_car,
+    Icons.personal_injury_rounded,
+    Icons.groups_sharp,
+    Icons.settings,
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    List<SideMenuItem> items = [
+      for (int i = 0; i < drawerList.length; i++)
+        SideMenuItem(
+            icon: Icon(icons[i]),
+            priority: i,
+            title: drawerList[i],
+            onTap: ((p0, p1) {
+              page.jumpToPage(i);
+              page1.changePage(i);
+            })),
+    ];
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Card(
+            elevation: 5,
+            child: Container(
+              height: 1000,
+              color: Colors.white,
+              child: SideMenu(
+                controller: page1,
+                style: SideMenuStyle(
+                    unselectedTitleTextStyle: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'QBold',
+                        fontWeight: FontWeight.w800),
+
+                    // showTooltip: false,
+                    displayMode: SideMenuDisplayMode.auto,
+                    selectedTitleTextStyle:
+                        const TextStyle(color: Colors.white),
+                    hoverColor: primaryRed,
+                    selectedColor: secondaryRed,
+                    selectedIconColor: Colors.white,
+                    unselectedIconColor: Colors.black
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                    // ),
+                    // backgroundColor: Colors.blueGrey[700]
+                    ),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Center(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          height: 180,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                items: items,
+              ),
+            ),
+          ),
+          Expanded(
+            child: PageView(
+              controller: page,
+              children: const [],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
