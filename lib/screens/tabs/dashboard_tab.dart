@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
-import 'package:metro_admin/widgets/appbar_widget.dart';
 import 'package:metro_admin/widgets/card_widget.dart';
 import 'package:metro_admin/widgets/listtile_widget.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class DashboardTab extends StatelessWidget {
-  const DashboardTab({Key? key}) : super(key: key);
+  final colorList = <Color>[blueAccent, amberAccent, secondaryRed];
+
+  final dataMap = <String, double>{
+    "No. of Rides": 12,
+    "Bookings Cancelled by User": 7,
+    "Bookings Cancelled by Drivers": 1,
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(),
       body: SingleChildScrollView(
         child: Container(
           child: Padding(
@@ -199,6 +204,25 @@ class DashboardTab extends StatelessWidget {
                             width: 500,
                             decoration: BoxDecoration(
                               color: tileColorDashboard,
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                width: 250,
+                                child: PieChart(
+                                  legendOptions: const LegendOptions(
+                                      showLegends: true,
+                                      legendPosition: LegendPosition.bottom),
+                                  dataMap: dataMap,
+                                  chartType: ChartType.disc,
+                                  baseChartColor:
+                                      Colors.grey[50]!.withOpacity(0.15),
+                                  colorList: colorList,
+                                  chartValuesOptions: const ChartValuesOptions(
+                                    showChartValuesInPercentage: true,
+                                  ),
+                                  totalValue: 20,
+                                ),
+                              ),
                             ),
                           ),
                         ),

@@ -39,6 +39,7 @@ dependencies:
   responsive_framework:
   percent_indicator:
   pie_chart:
+  flutter_map: ^0.13.0
 
 dev_dependencies:
   flutter_test:
