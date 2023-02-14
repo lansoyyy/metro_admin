@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metro_admin/screens/tabs/bookings_tab/bookings_tab_view.dart';
 import 'package:metro_admin/utils/colors.dart';
 
 class BookingScreen extends StatelessWidget {
@@ -26,18 +27,27 @@ class BookingScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500),
                       tabs: const [
                         Tab(
-                          text: 'PATIENT LIST',
+                          text: 'INSTANT BOOKING',
                         ),
                         Tab(
-                          text: 'MAP',
+                          text: 'ADVANCE BOOKING',
                         ),
                         Tab(
-                          text: 'NEWS & UPDATE',
+                          text: 'BOOK A FRIEND',
                         ),
                       ]),
                 ),
               ),
             ],
+          ),
+          Expanded(
+            child: SizedBox(
+              child: TabBarView(children: [
+                BookingsTabView(),
+                BookingsTabView(),
+                BookingsTabView(),
+              ]),
+            ),
           ),
         ],
       ),
