@@ -40,12 +40,18 @@ class BookingScreen extends StatelessWidget {
               ),
             ],
           ),
-          Expanded(
+          const Expanded(
             child: SizedBox(
               child: TabBarView(children: [
-                BookingsTabView(),
-                BookingsTabView(),
-                BookingsTabView(),
+                BookingsTabView(
+                  type: 'Instant Booking',
+                ),
+                BookingsTabView(
+                  type: 'Advance Booking',
+                ),
+                BookingsTabView(
+                  type: 'Book a Friend',
+                ),
               ]),
             ),
           ),
