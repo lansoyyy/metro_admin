@@ -1,6 +1,7 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/screens/tabs/bookings_screen.dart';
+import 'package:metro_admin/screens/tabs/cars_tab.dart';
 import 'package:metro_admin/screens/tabs/dashboard_tab.dart';
 import 'package:metro_admin/screens/tabs/map_screen.dart';
 import 'package:metro_admin/utils/colors.dart';
@@ -101,7 +102,8 @@ class HomeScreen extends StatelessWidget {
               children: [
                 DashboardTab(),
                 const MapScreen(),
-                const BookingScreen()
+                const BookingScreen(),
+                const CarsTab(),
               ],
             ),
           ),
