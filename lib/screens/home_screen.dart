@@ -105,6 +105,7 @@ class HomeScreen extends StatelessWidget {
                 DashboardTab(),
                 const MapScreen(),
                 const BookingScreen(),
+                const SizedBox(),
                 const CarsTab(),
                 const DriversTab(),
                 const PassengersTab(),
