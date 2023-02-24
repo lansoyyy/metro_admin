@@ -10,9 +10,8 @@ PreferredSizeWidget customAppbar() {
     actions: [
       IconButton(onPressed: (() {}), icon: const Icon(Icons.search)),
       IconButton(onPressed: (() {}), icon: const Icon(Icons.email)),
-      IconButton(onPressed: (() {}), icon: const Icon(Icons.notifications)),
       const SizedBox(
-        width: 30,
+        width: 20,
       ),
       const Icon(Icons.account_circle),
       const SizedBox(
