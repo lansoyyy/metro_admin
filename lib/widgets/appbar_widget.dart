@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 
-PreferredSizeWidget customAppbar() {
+PreferredSizeWidget customAppbar(page, page1) {
   return AppBar(
     foregroundColor: Colors.white,
     elevation: 0,
     backgroundColor: secondaryRed,
     actions: [
-      IconButton(onPressed: (() {}), icon: const Icon(Icons.search)),
-      IconButton(onPressed: (() {}), icon: const Icon(Icons.email)),
+      IconButton(
+          onPressed: (() {
+            page.jumpToPage(0);
+            page1.changePage(0);
+          }),
+          icon: const Icon(Icons.email)),
       const SizedBox(
         width: 20,
       ),

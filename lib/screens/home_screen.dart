@@ -5,6 +5,7 @@ import 'package:metro_admin/screens/tabs/cars_tab.dart';
 import 'package:metro_admin/screens/tabs/dashboard_tab.dart';
 import 'package:metro_admin/screens/tabs/drivers_tab.dart';
 import 'package:metro_admin/screens/tabs/map_screen.dart';
+import 'package:metro_admin/screens/tabs/messages_tab.dart';
 import 'package:metro_admin/screens/tabs/passengers_tab.dart';
 import 'package:metro_admin/screens/tabs/sales_tab.dart';
 import 'package:metro_admin/screens/tabs/settings_tab.dart';
@@ -16,6 +17,7 @@ class HomeScreen extends StatelessWidget {
   SideMenuController page1 = SideMenuController();
 
   var drawerList = [
+    'MESSAGES',
     'DASHBOARD',
     'LIVE MAP',
     'BOOKINGS',
@@ -27,6 +29,7 @@ class HomeScreen extends StatelessWidget {
   ];
 
   var icons = [
+    Icons.message_outlined,
     Icons.dashboard,
     Icons.location_on_rounded,
     Icons.local_taxi,
@@ -52,7 +55,7 @@ class HomeScreen extends StatelessWidget {
     ];
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppbar(),
+      appBar: customAppbar(page, page1),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -104,6 +107,7 @@ class HomeScreen extends StatelessWidget {
             child: PageView(
               controller: page,
               children: [
+                MessagesTab(),
                 DashboardTab(),
                 const MapScreen(),
                 const BookingScreen(),
