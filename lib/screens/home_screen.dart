@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                 const BookingScreen(),
                 SalesTab(),
                 const CarsTab(),
-                const DriversTab(),
+                DriversTab(),
                 const PassengersTab(),
                 const SettingsTab(),
               ],

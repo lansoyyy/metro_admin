@@ -1,9 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
-class DriversTab extends StatelessWidget {
-  const DriversTab({Key? key}) : super(key: key);
+class DriversTab extends StatefulWidget {
+  @override
+  State<DriversTab> createState() => _DriversTabState();
+}
+
+class _DriversTabState extends State<DriversTab> {
+  late String filter = '';
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,11 @@ class DriversTab extends StatelessWidget {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(100)),
                   child: TextFormField(
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      setState(() {
+                        filter = value;
+                      });
+                    },
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -39,74 +50,114 @@ class DriversTab extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 1,
-                width: MediaQuery.of(context).size.width * 1,
-                child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
-                    itemBuilder: ((context, index) {
-                      return Card(
-                        elevation: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: iconColor,
-                            borderRadius: BorderRadius.circular(7.5),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const CircleAvatar(
-                                minRadius: 50,
-                                maxRadius: 50,
-                                backgroundColor: Colors.grey,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextBold(
-                                      text: 'Assigned Driver: John Doe',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                  TextBold(
-                                      text: 'Contact #: 09090104355',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextBold(
-                                      text: 'Toyota Vios 2020',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                  TextBold(
-                                      text: 'Color: White',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                  TextBold(
-                                      text: 'Plate #: 123456',
-                                      fontSize: 14,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                ],
-                              ),
-                              TextBold(
-                                  text: 'On Duty',
-                                  fontSize: 18,
-                                  color: Colors.black),
-                            ],
-                          ),
-                        ),
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Drivers')
+                      .where('name',
+                          isGreaterThanOrEqualTo:
+                              toBeginningOfSentenceCase(filter))
+                      .where('name',
+                          isLessThan: '${toBeginningOfSentenceCase(filter)}z')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print('error');
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
                       );
-                    })),
-              )
+                    }
+
+                    final data = snapshot.requireData;
+
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 1,
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: GridView.builder(
+                          itemCount: data.docs.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3),
+                          itemBuilder: ((context, index) {
+                            final driverData = data.docs[index];
+                            return Card(
+                              elevation: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: iconColor,
+                                  borderRadius: BorderRadius.circular(7.5),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      minRadius: 50,
+                                      maxRadius: 50,
+                                      backgroundColor: Colors.grey,
+                                      child: Image.network(
+                                          '${driverData['profile_picture']}'),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        TextBold(
+                                            text:
+                                                'Assigned Driver: ${driverData['name']}',
+                                            fontSize: 14,
+                                            color: Colors.black),
+                                        TextBold(
+                                            text:
+                                                'Contact #: ${driverData['contact_number']}',
+                                            fontSize: 14,
+                                            color: Colors.black),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        TextBold(
+                                            text:
+                                                '${driverData['vehicle_model']}',
+                                            fontSize: 14,
+                                            color: Colors.black),
+                                        TextBold(
+                                            text:
+                                                'Color: ${driverData['vehicle_color']}',
+                                            fontSize: 14,
+                                            color: Colors.black),
+                                        TextBold(
+                                            text:
+                                                'Plate #: ${driverData['plate_number']}',
+                                            fontSize: 14,
+                                            color: Colors.black),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                      ],
+                                    ),
+                                    TextBold(
+                                        text: driverData['isActive']
+                                            ? 'On Duty'
+                                            : 'Off Duty',
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  ],
+                                ),
+                              ),
+                            );
+                          })),
+                    );
+                  })
             ],
           ),
         ),
