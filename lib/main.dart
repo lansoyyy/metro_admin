@@ -1,8 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/screens/home_screen.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyAhSraRT3bioDsXdTsRoXNb4Q37Ljp5S_s",
+          appId: "1:694409382296:web:b9f7cceb2afec0b2ef43ed",
+          messagingSenderId: "694409382296",
+          projectId: "metro-806d3",
+          storageBucket: "metro-806d3.appspot.com"));
   runApp(const MyApp());
 }
 
