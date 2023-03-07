@@ -30,39 +30,40 @@ class MapScreen extends StatelessWidget {
 
           final data = snapshot.requireData;
 
-          print(data.docs.length);
-
-          return FlutterMap(
-            options: MapOptions(
-              center: LatLng(8.348975, 124.972012),
-              zoom: 1.0,
-            ),
-            layers: [
-              TileLayerOptions(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c']),
-              MarkerLayerOptions(
-                markers: [
-                  for (int i = 0; i < data.docs.length; i++)
-                    Marker(
-                      height: 50,
-                      width: 50,
-                      point: LatLng(data.docs[i]['lat'], data.docs[i]['lang']),
-                      builder: (ctx) => Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/images/driver.png',
+          return InteractiveViewer(
+            child: FlutterMap(
+              options: MapOptions(
+                center: LatLng(8.348975, 124.972012),
+                zoom: 2.0,
+              ),
+              layers: [
+                TileLayerOptions(
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c']),
+                MarkerLayerOptions(
+                  markers: [
+                    for (int i = 0; i < data.size; i++)
+                      Marker(
+                        height: 50,
+                        width: 50,
+                        point:
+                            LatLng(data.docs[i]['lat'], data.docs[i]['lang']),
+                        builder: (ctx) => Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/driver.png',
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-            ],
-            children: const [],
+                  ],
+                ),
+              ],
+              children: const [],
+            ),
           );
         });
   }

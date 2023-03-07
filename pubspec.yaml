@@ -47,6 +47,9 @@ dependencies:
   firebase_storage:
   firebase_auth:
   google_maps_flutter_web:
+  flutter_map_zoombuttons:
+    git: https://github.com/fleaflet/flutter_map_zoombuttons.git
+
 
 dev_dependencies:
   flutter_test:
