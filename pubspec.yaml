@@ -46,6 +46,7 @@ dependencies:
   cloud_firestore:
   firebase_storage:
   firebase_auth:
+  google_maps_flutter_web:
 
 dev_dependencies:
   flutter_test:
