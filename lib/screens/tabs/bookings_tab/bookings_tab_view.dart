@@ -1,14 +1,23 @@
 import 'package:calendar_view/calendar_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
-
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 import '../../../utils/colors.dart';
 import '../../../widgets/card_widget.dart';
 
-class BookingsTabView extends StatelessWidget {
+class BookingsTabView extends StatefulWidget {
   final String type;
 
   const BookingsTabView({required this.type});
+
+  @override
+  State<BookingsTabView> createState() => _BookingsTabViewState();
+}
+
+class _BookingsTabViewState extends State<BookingsTabView> {
+  late String filter = '';
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -25,7 +34,11 @@ class BookingsTabView extends StatelessWidget {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(100)),
                 child: TextFormField(
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      filter = value;
+                    });
+                  },
                   decoration: const InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -63,8 +76,34 @@ class BookingsTabView extends StatelessWidget {
                             text: 'No. of Rides',
                             fontSize: 18,
                             color: blueAccent),
-                        subtitle: TextBold(
-                            text: '351', fontSize: 32, color: blueAccent),
+                        subtitle: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .where('type', isEqualTo: widget.type)
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return TextBold(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 32,
+                                  color: blueAccent);
+                            }),
                         leading: Container(
                           height: 100,
                           width: 60,
@@ -93,53 +132,100 @@ class BookingsTabView extends StatelessWidget {
                         thickness: 2,
                       ),
                     ),
-                    SizedBox(
-                      width: 300,
-                      height: 500,
-                      child: ListView.builder(itemBuilder: ((context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 5),
-                          child: Card(
-                            child: Container(
-                              color: iconColor,
-                              width: 180,
-                              height: 60,
-                              child: ListTile(
-                                trailing: SizedBox(
-                                  width: 90,
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on_rounded,
-                                        color: Colors.black,
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Bookings')
+                            .where('type', isEqualTo: widget.type)
+                            .where('userName',
+                                isGreaterThanOrEqualTo:
+                                    toBeginningOfSentenceCase(filter))
+                            .where('userName',
+                                isLessThan:
+                                    '${toBeginningOfSentenceCase(filter)}z')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print(snapshot.error);
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                            );
+                          }
+
+                          final data = snapshot.requireData;
+                          return SizedBox(
+                            width: 300,
+                            height: 500,
+                            child: ListView.builder(
+                                itemCount: data.docs.length,
+                                itemBuilder: ((context, index) {
+                                  final passData = data.docs[index];
+
+                                  Timestamp timestamp = passData['dateTime'];
+                                  DateTime dateTime = timestamp.toDate();
+                                  String formattedDateTime =
+                                      DateFormat('MMM').format(dateTime);
+
+                                  print(formattedDateTime);
+
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5),
+                                    child: Card(
+                                      child: Container(
+                                        color: iconColor,
+                                        width: 180,
+                                        height: 80,
+                                        child: ListTile(
+                                          trailing: SizedBox(
+                                            width: 120,
+                                            child: Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.location_on_rounded,
+                                                  color: Colors.black,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: TextBold(
+                                                      text: passData[
+                                                          'userDestination'],
+                                                      fontSize: 10,
+                                                      color: Colors.black),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          title: SizedBox(
+                                            width: 275,
+                                            child: TextBold(
+                                                text: passData['userName'],
+                                                fontSize: 16,
+                                                color: blueAccent),
+                                          ),
+                                          subtitle: TextRegular(
+                                              text:
+                                                  'February 14, 2023 | 01:43PM',
+                                              fontSize: 12,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      TextBold(
-                                          text: 'Abra',
-                                          fontSize: 14,
-                                          color: Colors.black),
-                                    ],
-                                  ),
-                                ),
-                                title: SizedBox(
-                                  width: 200,
-                                  child: TextBold(
-                                      text: 'Lebron James',
-                                      fontSize: 18,
-                                      color: blueAccent),
-                                ),
-                                subtitle: TextRegular(
-                                    text: 'February 14, 2023 | 01:43PM',
-                                    fontSize: 12,
-                                    color: Colors.black),
-                              ),
-                            ),
-                          ),
-                        );
-                      })),
-                    )
+                                    ),
+                                  );
+                                })),
+                          );
+                        })
                   ],
                 ),
                 Expanded(
@@ -151,6 +237,7 @@ class BookingsTabView extends StatelessWidget {
                       // to provide custom UI for month cells.
                       cellBuilder: (date, events, isToday, isInMonth) {
                         print(date.day);
+                        print(date.month);
                         // Return your widget to display as month cell.
                         return Container(
                             decoration: BoxDecoration(
@@ -167,7 +254,8 @@ class BookingsTabView extends StatelessWidget {
                       minMonth: DateTime(1990),
                       maxMonth: DateTime(2050),
 
-                      initialMonth: DateTime(2023),
+                      initialMonth:
+                          DateTime(DateTime.now().year, DateTime.now().month),
 
                       cellAspectRatio: 1,
                       onPageChange: (date, pageIndex) =>

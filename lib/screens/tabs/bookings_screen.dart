@@ -44,7 +44,7 @@ class BookingScreen extends StatelessWidget {
             child: SizedBox(
               child: TabBarView(children: [
                 BookingsTabView(
-                  type: 'Instant Booking',
+                  type: 'Book Now',
                 ),
                 BookingsTabView(
                   type: 'Advance Booking',
