@@ -12,6 +12,42 @@ class _SalesTabState extends State<SalesTab> {
 
   List<String> filters = ['Weekly', 'Monthly', 'Yearly'];
 
+  String filter = '';
+
+  List<String> days = [
+    'Monday',
+    'Tuesday',
+    ' Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+
+  List<String> weeks = [
+    'Week 1',
+    'Week 2',
+    'Week 3',
+    'Week 4',
+  ];
+
+  List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  var selectedType = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,6 +106,7 @@ class _SalesTabState extends State<SalesTab> {
               onTap: (() {
                 setState(() {
                   _index = 1;
+                  filter = filters[i];
                 });
               }),
               child: Container(
@@ -103,6 +140,11 @@ class _SalesTabState extends State<SalesTab> {
         SizedBox(
           height: 500,
           child: GridView.builder(
+              itemCount: filter == 'Weekly'
+                  ? days.length
+                  : filter == 'Monthly'
+                      ? weeks.length
+                      : months.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
               ),
@@ -113,6 +155,13 @@ class _SalesTabState extends State<SalesTab> {
                     onTap: (() {
                       setState(() {
                         _index = 2;
+                        if (filter == 'Weekly') {
+                          selectedType = days[index];
+                        } else if (filter == 'Monthly') {
+                          selectedType = weeks[index];
+                        } else {
+                          selectedType = months[index];
+                        }
                       });
                     }),
                     child: Container(
@@ -128,8 +177,12 @@ class _SalesTabState extends State<SalesTab> {
                             size: 32,
                           ),
                           title: TextBold(
-                              text: 'January $index, 2023',
-                              fontSize: 18,
+                              text: filter == 'Weekly'
+                                  ? days[index]
+                                  : filter == 'Monthly'
+                                      ? weeks[index]
+                                      : months[index],
+                              fontSize: 13,
                               color: Colors.white),
                         ),
                       ),
@@ -158,7 +211,9 @@ class _SalesTabState extends State<SalesTab> {
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: GestureDetector(
                       onTap: (() {
-                        setState(() {});
+                        setState(() {
+                          print(selectedType);
+                        });
                       }),
                       child: Container(
                         height: 50,
@@ -169,7 +224,7 @@ class _SalesTabState extends State<SalesTab> {
                         ),
                         child: Center(
                           child: TextBold(
-                              text: 'Monday',
+                              text: selectedType,
                               fontSize: 18,
                               color: Colors.white),
                         ),
