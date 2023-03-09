@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/card_widget.dart';
@@ -7,13 +8,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class DashboardTab extends StatelessWidget {
-  final colorList = <Color>[blueAccent, amberAccent, secondaryRed];
-
-  final dataMap = <String, double>{
-    "No. of Rides": 12,
-    "Bookings Cancelled by User": 7,
-    "Bookings Cancelled by Drivers": 1,
-  };
+  final colorList = <Color>[greenAccent, blueAccent, orangeAccent];
 
   @override
   Widget build(BuildContext context) {
@@ -48,106 +43,208 @@ class DashboardTab extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CardWidget(
-                      widget: ListTile(
-                        trailing: Icon(
-                          Icons.keyboard_double_arrow_up,
-                          color: greenAccent,
-                        ),
-                        title: TextBold(
-                            text: 'Total Customers',
-                            fontSize: 18,
-                            color: blueAccent),
-                        subtitle: TextBold(
-                            text: '351', fontSize: 32, color: blueAccent),
-                        leading: Container(
-                          height: 100,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: iconColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.group_add,
-                              color: Colors.black,
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Users')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('error');
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                            );
+                          }
+
+                          final data = snapshot.requireData;
+                          return CardWidget(
+                            widget: ListTile(
+                              trailing: Icon(
+                                Icons.keyboard_double_arrow_up,
+                                color: greenAccent,
+                              ),
+                              title: TextBold(
+                                  text: 'Total Customers',
+                                  fontSize: 18,
+                                  color: blueAccent),
+                              subtitle: TextBold(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 32,
+                                  color: blueAccent),
+                              leading: Container(
+                                height: 100,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: iconColor,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.group_add,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    CardWidget(
-                      widget: ListTile(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextBold(
-                                text: 'Total Sales',
-                                fontSize: 18,
-                                color: blueAccent),
-                            const SizedBox(
-                              height: 10,
+                          );
+                        }),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Bookings')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('error');
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                            );
+                          }
+
+                          final data = snapshot.requireData;
+                          return StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Bookings')
+                                  .where('bookingStatus', isEqualTo: 'Rejected')
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  print('error');
+                                  return const Center(child: Text('Error'));
+                                }
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(top: 50),
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )),
+                                  );
+                                }
+
+                                final data1 = snapshot.requireData;
+                                return CardWidget(
+                                  widget: ListTile(
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TextBold(
+                                            text: 'Total Sales',
+                                            fontSize: 18,
+                                            color: blueAccent),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        LinearPercentIndicator(
+                                          barRadius: const Radius.circular(100),
+                                          width: 140,
+                                          animation: true,
+                                          lineHeight: 20.0,
+                                          animationDuration: 2000,
+                                          percent: data1.docs.length /
+                                              data.docs.length,
+                                          linearStrokeCap:
+                                              LinearStrokeCap.roundAll,
+                                          progressColor: Colors.greenAccent,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        TextRegular(
+                                            text:
+                                                '${data1.docs.length} out of ${data.docs.length} bookings',
+                                            fontSize: 12,
+                                            color: Colors.grey),
+                                      ],
+                                    ),
+                                    leading: Container(
+                                      height: 100,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: iconColor,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.stacked_line_chart_sharp,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        }),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Bookings')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('error');
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                            );
+                          }
+
+                          final data = snapshot.requireData;
+                          return CardWidget(
+                            widget: ListTile(
+                              title: TextBold(
+                                  text: 'No. of Bookings',
+                                  fontSize: 18,
+                                  color: blueAccent),
+                              subtitle: TextBold(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 32,
+                                  color: blueAccent),
+                              leading: Container(
+                                height: 100,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: iconColor,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.book,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
-                            LinearPercentIndicator(
-                              barRadius: const Radius.circular(100),
-                              width: 140,
-                              animation: true,
-                              lineHeight: 20.0,
-                              animationDuration: 2000,
-                              percent: 0.9,
-                              linearStrokeCap: LinearStrokeCap.roundAll,
-                              progressColor: Colors.greenAccent,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextRegular(
-                                text: '250K out of 300k quota',
-                                fontSize: 12,
-                                color: Colors.grey),
-                          ],
-                        ),
-                        leading: Container(
-                          height: 100,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: iconColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.stacked_line_chart_sharp,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    CardWidget(
-                      widget: ListTile(
-                        title: TextBold(
-                            text: 'No. of Bookings',
-                            fontSize: 18,
-                            color: blueAccent),
-                        subtitle: TextBold(
-                            text: '14', fontSize: 32, color: blueAccent),
-                        leading: Container(
-                          height: 100,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: iconColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.book,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          );
+                        }),
                   ],
                 ),
                 const SizedBox(
@@ -166,31 +263,173 @@ class DashboardTab extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        ListTileWidget(
-                            title: 'Number of Taxis on Duty',
-                            subtitle: '50 out of 100',
-                            icon: Icons.local_taxi,
-                            color: greenAccent),
-                        ListTileWidget(
-                            title: 'Number of Rides',
-                            subtitle: '50 out of 100',
-                            icon: Icons.taxi_alert,
-                            color: blueAccent),
-                        ListTileWidget(
-                            title: 'Number of Bookings Cancelled by Users',
-                            subtitle: '50',
-                            icon: Icons.cancel,
-                            color: amberAccent),
-                        ListTileWidget(
-                            title: 'Number of Bookings Cancelled by Drivers',
-                            subtitle: '1',
-                            icon: Icons.cancel,
-                            color: secondaryRed),
-                        ListTileWidget(
-                            title: 'Total Trips Cancelled',
-                            subtitle: '6',
-                            icon: Icons.cancel,
-                            color: orangeAccent),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Drivers')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('error');
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return StreamBuilder<QuerySnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('Drivers')
+                                      .where('isActive', isEqualTo: true)
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.hasError) {
+                                      print('error');
+                                      return const Center(child: Text('Error'));
+                                    }
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Padding(
+                                        padding: EdgeInsets.only(top: 50),
+                                        child: Center(
+                                            child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                        )),
+                                      );
+                                    }
+
+                                    final data1 = snapshot.requireData;
+                                    return ListTileWidget(
+                                        perct: data1.docs.length /
+                                            data.docs.length,
+                                        title: 'Number of Taxis on Duty',
+                                        subtitle:
+                                            '${data1.docs.length} out of ${data.docs.length}',
+                                        icon: Icons.local_taxi,
+                                        color: greenAccent);
+                                  });
+                            }),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('error');
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return StreamBuilder<QuerySnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('Bookings')
+                                      .where('bookingStatus',
+                                          isNotEqualTo: 'Rejected')
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.hasError) {
+                                      print('error');
+                                      return const Center(child: Text('Error'));
+                                    }
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Padding(
+                                        padding: EdgeInsets.only(top: 50),
+                                        child: Center(
+                                            child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                        )),
+                                      );
+                                    }
+
+                                    final data1 = snapshot.requireData;
+                                    return ListTileWidget(
+                                        perct: data1.docs.length /
+                                            data.docs.length,
+                                        subtitle:
+                                            '${data1.docs.length} out of ${data.docs.length}',
+                                        title: 'Number of Rides',
+                                        icon: Icons.taxi_alert,
+                                        color: blueAccent);
+                                  });
+                            }),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('error');
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data = snapshot.requireData;
+                              return StreamBuilder<QuerySnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('Bookings')
+                                      .where('bookingStatus',
+                                          isEqualTo: 'Rejected')
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.hasError) {
+                                      print('error');
+                                      return const Center(child: Text('Error'));
+                                    }
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Padding(
+                                        padding: EdgeInsets.only(top: 50),
+                                        child: Center(
+                                            child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                        )),
+                                      );
+                                    }
+
+                                    final data1 = snapshot.requireData;
+                                    return ListTileWidget(
+                                        title: 'Total Trips Cancelled',
+                                        perct: data1.docs.length /
+                                            data.docs.length,
+                                        subtitle:
+                                            '${data1.docs.length} out of ${data.docs.length}',
+                                        icon: Icons.cancel,
+                                        color: orangeAccent);
+                                  });
+                            }),
                       ],
                     ),
                     Padding(
@@ -208,20 +447,120 @@ class DashboardTab extends StatelessWidget {
                             child: Center(
                               child: SizedBox(
                                 width: 250,
-                                child: PieChart(
-                                  legendOptions: const LegendOptions(
-                                      showLegends: true,
-                                      legendPosition: LegendPosition.bottom),
-                                  dataMap: dataMap,
-                                  chartType: ChartType.disc,
-                                  baseChartColor:
-                                      Colors.grey[50]!.withOpacity(0.15),
-                                  colorList: colorList,
-                                  chartValuesOptions: const ChartValuesOptions(
-                                    showChartValuesInPercentage: true,
-                                  ),
-                                  totalValue: 20,
-                                ),
+                                child: StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Drivers')
+                                        .where('isActive', isEqualTo: true)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasError) {
+                                        print('error');
+                                        return const Center(
+                                            child: Text('Error'));
+                                      }
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Padding(
+                                          padding: EdgeInsets.only(top: 50),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )),
+                                        );
+                                      }
+
+                                      final data2 = snapshot.requireData;
+                                      return StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('Bookings')
+                                              .snapshots(),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<QuerySnapshot>
+                                                  snapshot) {
+                                            if (snapshot.hasError) {
+                                              print('error');
+                                              return const Center(
+                                                  child: Text('Error'));
+                                            }
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 50),
+                                                child: Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                  color: Colors.black,
+                                                )),
+                                              );
+                                            }
+
+                                            final data = snapshot.requireData;
+                                            return StreamBuilder<QuerySnapshot>(
+                                                stream: FirebaseFirestore
+                                                    .instance
+                                                    .collection('Bookings')
+                                                    .where('bookingStatus',
+                                                        isEqualTo: 'Rejected')
+                                                    .snapshots(),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<QuerySnapshot>
+                                                        snapshot) {
+                                                  if (snapshot.hasError) {
+                                                    print('error');
+                                                    return const Center(
+                                                        child: Text('Error'));
+                                                  }
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 50),
+                                                      child: Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                        color: Colors.black,
+                                                      )),
+                                                    );
+                                                  }
+
+                                                  final data1 =
+                                                      snapshot.requireData;
+                                                  return PieChart(
+                                                    legendOptions:
+                                                        const LegendOptions(
+                                                            showLegends: true,
+                                                            legendPosition:
+                                                                LegendPosition
+                                                                    .bottom),
+                                                    dataMap: {
+                                                      "Number of Taxis on Duty":
+                                                          data2.docs.length
+                                                              .toDouble(),
+                                                      "Number of Rides": data
+                                                          .docs.length
+                                                          .toDouble(),
+                                                      "Number of Rides Cancelled":
+                                                          data1.docs.length
+                                                              .toDouble(),
+                                                    },
+                                                    chartType: ChartType.disc,
+                                                    baseChartColor: Colors
+                                                        .grey[50]!
+                                                        .withOpacity(0.15),
+                                                    colorList: colorList,
+                                                    chartValuesOptions:
+                                                        const ChartValuesOptions(
+                                                      showChartValuesInPercentage:
+                                                          true,
+                                                    ),
+                                                    totalValue: 20,
+                                                  );
+                                                });
+                                          });
+                                    }),
                               ),
                             ),
                           ),

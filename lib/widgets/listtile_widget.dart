@@ -8,12 +8,14 @@ class ListTileWidget extends StatelessWidget {
   final IconData icon;
   final String subtitle;
   final String title;
+  final double perct;
 
   const ListTileWidget(
       {required this.title,
       required this.subtitle,
       required this.icon,
-      required this.color});
+      required this.color,
+      required this.perct});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ListTileWidget extends StatelessWidget {
               animation: true,
               lineHeight: 20.0,
               animationDuration: 2000,
-              percent: 0.5,
+              percent: perct,
               linearStrokeCap: LinearStrokeCap.roundAll,
               progressColor: color,
             ),
