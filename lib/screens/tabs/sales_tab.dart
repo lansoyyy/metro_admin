@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 
 class SalesTab extends StatefulWidget {
+  const SalesTab({super.key});
+
   @override
   State<SalesTab> createState() => _SalesTabState();
 }
@@ -13,6 +16,7 @@ class _SalesTabState extends State<SalesTab> {
   List<String> filters = ['Weekly', 'Monthly', 'Yearly'];
 
   String filter = '';
+  String filterType = '';
 
   List<String> days = [
     'Monday',
@@ -24,11 +28,20 @@ class _SalesTabState extends State<SalesTab> {
     'Sunday'
   ];
 
+  List<int> daysValue = [1, 2, 3, 4, 5, 6, 7];
+
   List<String> weeks = [
     'Week 1',
     'Week 2',
     'Week 3',
     'Week 4',
+  ];
+
+  List<int> weeksValue = [
+    1,
+    2,
+    3,
+    4,
   ];
 
   List<String> months = [
@@ -46,7 +59,58 @@ class _SalesTabState extends State<SalesTab> {
     "December"
   ];
 
-  var selectedType = '';
+  List<int> monthsValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  var selectedType = 0;
+
+  myFilter() {
+    print('called');
+    if (filter == 'Weekly') {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('dayType', isEqualTo: selectedType)
+          .snapshots();
+    } else if (filter == 'Monthly') {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('week', isEqualTo: selectedType.toString())
+          .snapshots();
+    } else {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('month', isEqualTo: selectedType)
+          .snapshots();
+    }
+  }
+
+  myFilter1() {
+    print('called');
+    if (filter == 'Weekly') {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('dayType', isEqualTo: selectedType)
+          .where('bookingStatus', isEqualTo: 'Rejected')
+          .snapshots();
+    } else if (filter == 'Monthly') {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('week', isEqualTo: selectedType.toString())
+          .where('bookingStatus', isEqualTo: 'Rejected')
+          .snapshots();
+    } else {
+      return FirebaseFirestore.instance
+          .collection('Bookings')
+          .where('year', isEqualTo: DateTime.now().year)
+          .where('month', isEqualTo: selectedType)
+          .where('bookingStatus', isEqualTo: 'Rejected')
+          .snapshots();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,11 +220,14 @@ class _SalesTabState extends State<SalesTab> {
                       setState(() {
                         _index = 2;
                         if (filter == 'Weekly') {
-                          selectedType = days[index];
+                          selectedType = daysValue[index];
+                          filterType = days[index];
                         } else if (filter == 'Monthly') {
-                          selectedType = weeks[index];
+                          filterType = weeks[index];
+                          selectedType = weeksValue[index];
                         } else {
-                          selectedType = months[index];
+                          filterType = months[index];
+                          selectedType = monthsValue[index];
                         }
                       });
                     }),
@@ -224,7 +291,7 @@ class _SalesTabState extends State<SalesTab> {
                         ),
                         child: Center(
                           child: TextBold(
-                              text: selectedType,
+                              text: filterType,
                               fontSize: 18,
                               color: Colors.white),
                         ),
@@ -237,136 +304,211 @@ class _SalesTabState extends State<SalesTab> {
                       onTap: (() {
                         setState(() {});
                       }),
-                      child: Container(
-                        height: 90,
-                        width: 230,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: blueAccent, width: 1.5),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.local_taxi_rounded,
-                              color: blueAccent,
-                              size: 58,
-                            ),
-                            title: TextRegular(
-                                text: 'Number of Rides',
-                                fontSize: 14,
-                                color: blueAccent),
-                            subtitle: TextBold(
-                                text: '23', fontSize: 38, color: blueAccent),
-                          ),
-                        ),
-                      ),
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: myFilter(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              print('error');
+                              return const Center(child: Text('Error'));
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Padding(
+                                padding: EdgeInsets.only(top: 50),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                )),
+                              );
+                            }
+
+                            final data = snapshot.requireData;
+                            return Container(
+                              height: 90,
+                              width: 230,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: blueAccent, width: 1.5),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: ListTile(
+                                  leading: Icon(
+                                    Icons.local_taxi_rounded,
+                                    color: blueAccent,
+                                    size: 58,
+                                  ),
+                                  title: TextRegular(
+                                      text: 'Number of Rides',
+                                      fontSize: 14,
+                                      color: blueAccent),
+                                  subtitle: TextBold(
+                                      text: data.docs.length.toString(),
+                                      fontSize: 38,
+                                      color: blueAccent),
+                                ),
+                              ),
+                            );
+                          }),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: GestureDetector(
                       onTap: (() {
-                        setState(() {});
+                        print(filter);
+                        print(selectedType);
+                        print(DateTime.now().year.runtimeType);
                       }),
-                      child: Container(
-                        height: 90,
-                        width: 230,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red, width: 1.5),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: ListTile(
-                            leading: const Icon(
-                              Icons.taxi_alert,
-                              color: Colors.red,
-                              size: 58,
-                            ),
-                            title: TextRegular(
-                                text: 'Trips Cancelled',
-                                fontSize: 14,
-                                color: Colors.red),
-                            subtitle: TextBold(
-                                text: '23', fontSize: 38, color: Colors.red),
-                          ),
-                        ),
-                      ),
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: myFilter1(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              print('error');
+                              return const Center(child: Text('Error'));
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Padding(
+                                padding: EdgeInsets.only(top: 50),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                )),
+                              );
+                            }
+
+                            final data = snapshot.requireData;
+                            return Container(
+                              height: 90,
+                              width: 230,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.red, width: 1.5),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.taxi_alert,
+                                    color: Colors.red,
+                                    size: 58,
+                                  ),
+                                  title: TextRegular(
+                                      text: 'Trips Cancelled',
+                                      fontSize: 14,
+                                      color: Colors.red),
+                                  subtitle: TextBold(
+                                      text: data.docs.length.toString(),
+                                      fontSize: 38,
+                                      color: Colors.red),
+                                ),
+                              ),
+                            );
+                          }),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              width: 600,
-              height: 500,
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: ((context, index) {
-                    return Card(
-                      elevation: 7,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            TextBold(
-                                text: 'January 01, 2022 - 8:30AM',
-                                fontSize: 24,
-                                color: blueAccent),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextBold(
-                                text: 'Drivers Name',
-                                fontSize: 12,
-                                color: Colors.grey),
-                            TextBold(
-                                text: 'John Doe',
-                                fontSize: 18,
-                                color: Colors.black),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextBold(
-                                text: 'Passengers Name',
-                                fontSize: 12,
-                                color: Colors.grey),
-                            TextBold(
-                                text: 'Juan Dela Cruz',
-                                fontSize: 18,
-                                color: Colors.black),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextBold(
-                                text: 'Total Distance (km)',
-                                fontSize: 12,
-                                color: Colors.grey),
-                            TextBold(
-                                text: '150km',
-                                fontSize: 18,
-                                color: Colors.black),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextBold(
-                                text: 'Total Fare',
-                                fontSize: 12,
-                                color: Colors.grey),
-                            TextBold(
-                                text: '250.00php',
-                                fontSize: 18,
-                                color: Colors.black),
-                          ],
-                        ),
-                      ),
+            StreamBuilder<QuerySnapshot>(
+                stream: myFilter(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    print('error');
+                    return const Center(child: Text('Error'));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 50),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.black,
+                      )),
                     );
-                  })),
-            ),
+                  }
+
+                  final data = snapshot.requireData;
+
+                  print(data.docs.length);
+                  return SizedBox(
+                    width: 600,
+                    height: 500,
+                    child: GridView.builder(
+                        itemCount: data.docs.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2),
+                        itemBuilder: ((context, index) {
+                          return Card(
+                            elevation: 7,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextBold(
+                                      text: 'January 01, 2022 - 8:30AM',
+                                      fontSize: 24,
+                                      color: blueAccent),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextBold(
+                                      text: 'Drivers Name',
+                                      fontSize: 12,
+                                      color: Colors.grey),
+                                  TextBold(
+                                      text: 'John Doe',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextBold(
+                                      text: 'Passengers Name',
+                                      fontSize: 12,
+                                      color: Colors.grey),
+                                  TextBold(
+                                      text: 'Juan Dela Cruz',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextBold(
+                                      text: 'Total Distance (km)',
+                                      fontSize: 12,
+                                      color: Colors.grey),
+                                  TextBold(
+                                      text: '150km',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextBold(
+                                      text: 'Total Fare',
+                                      fontSize: 12,
+                                      color: Colors.grey),
+                                  TextBold(
+                                      text: '250.00php',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                ],
+                              ),
+                            ),
+                          );
+                        })),
+                  );
+                }),
           ],
         ),
       ],
