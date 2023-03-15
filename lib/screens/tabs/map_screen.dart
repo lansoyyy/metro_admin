@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../widgets/drivers_dialog.dart';
+
 class MapScreen extends StatelessWidget {
   const MapScreen({Key? key}) : super(key: key);
 
@@ -49,11 +51,27 @@ class MapScreen extends StatelessWidget {
                         width: 50,
                         point:
                             LatLng(data.docs[i]['lat'], data.docs[i]['lang']),
-                        builder: (ctx) => Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/images/driver.png',
+                        builder: (ctx) => GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => DriverInfoDialog(
+                                profilePicture: data.docs[i]['profile_picture'],
+                                name: data.docs[i]['name'],
+                                contactNumber: data.docs[i]['contact_number'],
+                                vehicleModel: data.docs[i]['vehicle_model'],
+                                vehicleColor: data.docs[i]['vehicle_color'],
+                                vehiclePlateNumber: data.docs[i]
+                                    ['plate_number'],
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/driver.png',
+                                ),
                               ),
                             ),
                           ),
