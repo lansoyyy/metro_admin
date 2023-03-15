@@ -9,7 +9,7 @@ import '../../../widgets/card_widget.dart';
 class BookingsTabView extends StatefulWidget {
   final String type;
 
-  const BookingsTabView({required this.type});
+  const BookingsTabView({super.key, required this.type});
 
   @override
   State<BookingsTabView> createState() => _BookingsTabViewState();
@@ -17,6 +17,9 @@ class BookingsTabView extends StatefulWidget {
 
 class _BookingsTabViewState extends State<BookingsTabView> {
   late String filter = '';
+  late int filterDate = 0;
+  late int filterMonth = 0;
+  late int filterYear = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +80,23 @@ class _BookingsTabViewState extends State<BookingsTabView> {
                             fontSize: 18,
                             color: blueAccent),
                         subtitle: StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection('Bookings')
-                                .where('type', isEqualTo: widget.type)
-                                .snapshots(),
+                            stream: filterDate == 0
+                                ? FirebaseFirestore.instance
+                                    .collection('Bookings')
+                                    .where('type', isEqualTo: widget.type)
+                                    .where('year',
+                                        isEqualTo: DateTime.now().year)
+                                    .where('month',
+                                        isEqualTo: DateTime.now().month)
+                                    .where('day', isEqualTo: DateTime.now().day)
+                                    .snapshots()
+                                : FirebaseFirestore.instance
+                                    .collection('Bookings')
+                                    .where('type', isEqualTo: widget.type)
+                                    .where('year', isEqualTo: filterYear)
+                                    .where('month', isEqualTo: filterMonth)
+                                    .where('day', isEqualTo: filterDate)
+                                    .snapshots(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (snapshot.hasError) {
@@ -133,16 +149,33 @@ class _BookingsTabViewState extends State<BookingsTabView> {
                       ),
                     ),
                     StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('Bookings')
-                            .where('type', isEqualTo: widget.type)
-                            .where('userName',
-                                isGreaterThanOrEqualTo:
-                                    toBeginningOfSentenceCase(filter))
-                            .where('userName',
-                                isLessThan:
-                                    '${toBeginningOfSentenceCase(filter)}z')
-                            .snapshots(),
+                        stream: filterDate == 0
+                            ? FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .where('type', isEqualTo: widget.type)
+                                .where('year', isEqualTo: DateTime.now().year)
+                                .where('month', isEqualTo: DateTime.now().month)
+                                .where('day', isEqualTo: DateTime.now().day)
+                                .where('userName',
+                                    isGreaterThanOrEqualTo:
+                                        toBeginningOfSentenceCase(filter))
+                                .where('userName',
+                                    isLessThan:
+                                        '${toBeginningOfSentenceCase(filter)}z')
+                                .snapshots()
+                            : FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .where('type', isEqualTo: widget.type)
+                                .where('year', isEqualTo: filterYear)
+                                .where('month', isEqualTo: filterMonth)
+                                .where('day', isEqualTo: filterDate)
+                                .where('userName',
+                                    isGreaterThanOrEqualTo:
+                                        toBeginningOfSentenceCase(filter))
+                                .where('userName',
+                                    isLessThan:
+                                        '${toBeginningOfSentenceCase(filter)}z')
+                                .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasError) {
@@ -261,7 +294,11 @@ class _BookingsTabViewState extends State<BookingsTabView> {
                       onPageChange: (date, pageIndex) =>
                           print("$date, $pageIndex"),
                       onCellTap: (events, date) {
-                        print(date.day);
+                        setState(() {
+                          filterDate = date.day;
+                          filterMonth = date.month;
+                          filterYear = date.year;
+                        });
                         // Implement callback when user taps on a cell.
                       },
                       startDay: WeekDays
