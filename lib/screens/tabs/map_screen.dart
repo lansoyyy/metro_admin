@@ -33,8 +33,8 @@ class MapScreen extends StatelessWidget {
           return InteractiveViewer(
             child: FlutterMap(
               options: MapOptions(
-                center: LatLng(8.348975, 124.972012),
-                zoom: 2.0,
+                center: LatLng(16.9754, 121.8107),
+                zoom: 12.0,
               ),
               layers: [
                 TileLayerOptions(

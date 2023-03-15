@@ -10,6 +10,8 @@ import 'package:pie_chart/pie_chart.dart';
 class DashboardTab extends StatelessWidget {
   final colorList = <Color>[greenAccent, blueAccent, orangeAccent];
 
+  DashboardTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
