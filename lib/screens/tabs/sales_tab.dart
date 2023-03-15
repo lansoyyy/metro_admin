@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
+import 'package:intl/intl.dart';
 
 class SalesTab extends StatefulWidget {
   const SalesTab({super.key});
@@ -443,6 +444,7 @@ class _SalesTabState extends State<SalesTab> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2),
                         itemBuilder: ((context, index) {
+                          double payments = data.docs[index]['payment'];
                           return Card(
                             elevation: 7,
                             child: Padding(
@@ -455,7 +457,9 @@ class _SalesTabState extends State<SalesTab> {
                                     height: 20,
                                   ),
                                   TextBold(
-                                      text: 'January 01, 2022 - 8:30AM',
+                                      text: DateFormat.yMMMd().add_jm().format(
+                                          data.docs[index]['dateTime']
+                                              .toDate()),
                                       fontSize: 24,
                                       color: blueAccent),
                                   const SizedBox(
@@ -466,7 +470,7 @@ class _SalesTabState extends State<SalesTab> {
                                       fontSize: 12,
                                       color: Colors.grey),
                                   TextBold(
-                                      text: 'John Doe',
+                                      text: data.docs[index]['driverName'],
                                       fontSize: 18,
                                       color: Colors.black),
                                   const SizedBox(
@@ -477,18 +481,18 @@ class _SalesTabState extends State<SalesTab> {
                                       fontSize: 12,
                                       color: Colors.grey),
                                   TextBold(
-                                      text: 'Juan Dela Cruz',
+                                      text: data.docs[index]['userName'],
                                       fontSize: 18,
                                       color: Colors.black),
                                   const SizedBox(
                                     height: 10,
                                   ),
                                   TextBold(
-                                      text: 'Total Distance (km)',
+                                      text: 'Destination',
                                       fontSize: 12,
                                       color: Colors.grey),
                                   TextBold(
-                                      text: '150km',
+                                      text: data.docs[index]['userDestination'],
                                       fontSize: 18,
                                       color: Colors.black),
                                   const SizedBox(
@@ -499,7 +503,8 @@ class _SalesTabState extends State<SalesTab> {
                                       fontSize: 12,
                                       color: Colors.grey),
                                   TextBold(
-                                      text: '250.00php',
+                                      text:
+                                          '${payments.toStringAsFixed(2)} php',
                                       fontSize: 18,
                                       color: Colors.black),
                                 ],
