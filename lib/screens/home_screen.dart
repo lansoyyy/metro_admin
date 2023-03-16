@@ -107,15 +107,15 @@ class HomeScreen extends StatelessWidget {
             child: PageView(
               controller: page,
               children: [
-                MessagesTab(),
+                const MessagesTab(),
                 DashboardTab(),
                 const MapScreen(),
                 const BookingScreen(),
-                SalesTab(),
+                const SalesTab(),
                 const CarsTab(),
                 DriversTab(),
                 const PassengersTab(),
-                const SettingsTab(),
+                SettingsTab(),
               ],
             ),
           ),
