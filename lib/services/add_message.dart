@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 Future addMessage(
@@ -10,14 +9,13 @@ Future addMessage(
   String myName,
 ) async {
   final docUser = FirebaseFirestore.instance
-      .collection(FirebaseAuth.instance.currentUser!.uid)
+      .collection('admin')
       .doc(receiverId)
       .collection('Messages')
       .doc();
 
-  final docUser1 = FirebaseFirestore.instance
-      .collection(FirebaseAuth.instance.currentUser!.uid)
-      .doc(receiverId);
+  final docUser1 =
+      FirebaseFirestore.instance.collection('admin').doc(receiverId);
 
   String tdata = DateFormat("hh:mm a").format(DateTime.now());
 
@@ -55,13 +53,12 @@ Future addMessage1(
 ) async {
   final docUser = FirebaseFirestore.instance
       .collection(receiverId)
-      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .doc('admin')
       .collection('Messages')
       .doc();
 
-  final docUser1 = FirebaseFirestore.instance
-      .collection(receiverId)
-      .doc(FirebaseAuth.instance.currentUser!.uid);
+  final docUser1 =
+      FirebaseFirestore.instance.collection(receiverId).doc('admin');
 
   String tdata = DateFormat("hh:mm a").format(DateTime.now());
 

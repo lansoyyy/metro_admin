@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:metro_admin/services/add_message.dart';
 import 'package:metro_admin/utils/colors.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
 class MessagesTab extends StatefulWidget {
+  const MessagesTab({super.key});
+
   @override
   State<MessagesTab> createState() => _MessagesTabState();
 }
@@ -16,6 +19,10 @@ class _MessagesTabState extends State<MessagesTab> {
   String otherId = '';
 
   final msgController = TextEditingController();
+
+  late String profilePicture;
+  late String name;
+  late String receiverId;
 
   @override
   Widget build(BuildContext context) {
@@ -172,12 +179,16 @@ class _MessagesTabState extends State<MessagesTab> {
                               itemCount: data.docs.length,
                               itemBuilder: (context, index) {
                                 final userData = data.docs[index];
-                                print(data.docs.length);
-                                print(data.docs.length);
+
                                 // Check if message is from sender or receiver
                                 bool isSender = index % 2 != 0;
 
                                 // Build chat bubble based on sender/receiver status
+
+                                name = userData['nameOfPersonToSend'];
+                                receiverId = userData.id;
+                                profilePicture =
+                                    userData['profilePicOfPersonToSend'];
                                 return Row(
                                   mainAxisAlignment: isSender
                                       ? MainAxisAlignment.end
@@ -260,6 +271,20 @@ class _MessagesTabState extends State<MessagesTab> {
                                     IconButton(
                                       icon: const Icon(Icons.send),
                                       onPressed: () {
+                                        addMessage(
+                                            profilePicture,
+                                            name,
+                                            msgController.text,
+                                            receiverId,
+                                            'Admin');
+
+                                        addMessage1(
+                                            profilePicture,
+                                            name,
+                                            msgController.text,
+                                            receiverId,
+                                            'Admin');
+
                                         msgController.clear();
                                       },
                                     ),
