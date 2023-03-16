@@ -56,9 +56,11 @@ class SettingsTab extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 5, bottom: 5),
                             child: ListTile(
-                              leading: const CircleAvatar(
+                              leading: CircleAvatar(
                                 maxRadius: 50,
                                 minRadius: 50,
+                                child: Image.network(
+                                    'https://cdn-icons-png.flaticon.com/512/666/666201.png'),
                               ),
                               title: TextBold(
                                   text: 'COOPERATIVE - CHAIRMAN',
@@ -99,9 +101,12 @@ class SettingsTab extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        const CircleAvatar(
+                        CircleAvatar(
+                          backgroundColor: iconColor,
                           maxRadius: 50,
                           minRadius: 50,
+                          child: Image.network(
+                              'https://cdn-icons-png.flaticon.com/512/666/666201.png'),
                         ),
                         const SizedBox(
                           height: 10,
