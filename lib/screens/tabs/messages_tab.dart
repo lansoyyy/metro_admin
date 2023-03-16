@@ -24,6 +24,16 @@ class _MessagesTabState extends State<MessagesTab> {
   late String name;
   late String receiverId;
 
+  final cont = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cont.jumpTo(cont.position.maxScrollExtent);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -128,7 +138,7 @@ class _MessagesTabState extends State<MessagesTab> {
                                         fontFamily: 'QRegular'),
                                   ),
                                   subtitle: Text(
-                                    userData['nameOfPersonToSend'],
+                                    'from: ${userData['nameOfPersonToSend']}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -148,10 +158,10 @@ class _MessagesTabState extends State<MessagesTab> {
           id != ''
               ? StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
-                      .collection('admin')
-                      .doc(id)
+                      .collection(id)
+                      .doc('admin')
                       .collection('Messages')
-                      .where('id', isEqualTo: otherId)
+                      .orderBy('dateTime')
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -176,12 +186,12 @@ class _MessagesTabState extends State<MessagesTab> {
                         children: [
                           Expanded(
                             child: ListView.builder(
+                              controller: cont,
                               itemCount: data.docs.length,
                               itemBuilder: (context, index) {
                                 final userData = data.docs[index];
 
                                 // Check if message is from sender or receiver
-                                bool isSender = index % 2 != 0;
 
                                 // Build chat bubble based on sender/receiver status
 
@@ -190,14 +200,16 @@ class _MessagesTabState extends State<MessagesTab> {
                                 profilePicture =
                                     userData['profilePicOfPersonToSend'];
                                 return Row(
-                                  mainAxisAlignment: isSender
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      userData['myName'] == 'Admin'
+                                          ? MainAxisAlignment.end
+                                          : MainAxisAlignment.start,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: isSender
-                                          ? CrossAxisAlignment.end
-                                          : CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          userData['myName'] == 'Admin'
+                                              ? CrossAxisAlignment.end
+                                              : CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           margin: const EdgeInsets.symmetric(
@@ -205,7 +217,7 @@ class _MessagesTabState extends State<MessagesTab> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 10.0, horizontal: 15.0),
                                           decoration: BoxDecoration(
-                                            color: isSender
+                                            color: userData['myName'] == 'Admin'
                                                 ? secondaryRed
                                                 : blueAccent,
                                             borderRadius: BorderRadius.only(
@@ -213,10 +225,12 @@ class _MessagesTabState extends State<MessagesTab> {
                                                   const Radius.circular(20.0),
                                               topRight:
                                                   const Radius.circular(20.0),
-                                              bottomLeft: isSender
+                                              bottomLeft: userData['myName'] ==
+                                                      'Admin'
                                                   ? const Radius.circular(20.0)
                                                   : const Radius.circular(0.0),
-                                              bottomRight: isSender
+                                              bottomRight: userData['myName'] ==
+                                                      'Admin'
                                                   ? const Radius.circular(0.0)
                                                   : const Radius.circular(20.0),
                                             ),
@@ -271,19 +285,14 @@ class _MessagesTabState extends State<MessagesTab> {
                                     IconButton(
                                       icon: const Icon(Icons.send),
                                       onPressed: () {
-                                        addMessage(
-                                            profilePicture,
-                                            name,
-                                            msgController.text,
-                                            receiverId,
-                                            'Admin');
+                                        addMessage(profilePicture, name,
+                                            msgController.text, id, 'Admin');
 
-                                        addMessage1(
-                                            profilePicture,
-                                            name,
-                                            msgController.text,
-                                            receiverId,
-                                            'Admin');
+                                        addMessage1(profilePicture, name,
+                                            msgController.text, id, 'Admin');
+
+                                        cont.jumpTo(
+                                            cont.position.maxScrollExtent);
 
                                         msgController.clear();
                                       },
