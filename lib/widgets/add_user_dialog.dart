@@ -3,6 +3,8 @@ import 'package:metro_admin/services/add_user.dart';
 import 'package:metro_admin/widgets/text_widget.dart';
 
 class InputDialog extends StatefulWidget {
+  const InputDialog({super.key});
+
   @override
   _InputDialogState createState() => _InputDialogState();
 }
@@ -88,13 +90,13 @@ class _InputDialogState extends State<InputDialog> {
         ),
       ),
       actions: [
-        FlatButton(
+        MaterialButton(
           child: const Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
+        MaterialButton(
           child: TextBold(text: 'Save', fontSize: 18, color: Colors.blue),
           onPressed: () {
             if (_formKey.currentState!.validate()) {
