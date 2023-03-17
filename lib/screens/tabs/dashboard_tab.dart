@@ -558,7 +558,11 @@ class DashboardTab extends StatelessWidget {
                                                       showChartValuesInPercentage:
                                                           true,
                                                     ),
-                                                    totalValue: 20,
+                                                    totalValue: (data2
+                                                                .docs.length +
+                                                            data1.docs.length +
+                                                            data.docs.length)
+                                                        .toDouble(),
                                                   );
                                                 });
                                           });
