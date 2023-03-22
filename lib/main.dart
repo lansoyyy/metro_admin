@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginPage(),
-      title: 'METRO ADMIN PANEL',
+      title: 'Taxi Region II',
       builder: ((context, child) {
         return ResponsiveWrapper.builder(child,
             maxWidth: 1200,
