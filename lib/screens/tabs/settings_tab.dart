@@ -6,6 +6,8 @@ import 'package:metro_admin/widgets/text_widget.dart';
 import '../../widgets/add_user_dialog.dart';
 
 class SettingsTab extends StatefulWidget {
+  const SettingsTab({super.key});
+
   @override
   State<SettingsTab> createState() => _SettingsTabState();
 }
@@ -23,7 +25,7 @@ class _SettingsTabState extends State<SettingsTab> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return InputDialog();
+                return const InputDialog();
               },
             );
           }),
@@ -112,10 +114,10 @@ class _SettingsTabState extends State<SettingsTab> {
                                               userData1 = userData;
                                             });
                                           },
-                                          leading: CircleAvatar(
+                                          leading: const CircleAvatar(
                                             maxRadius: 50,
                                             minRadius: 50,
-                                            child: Image.network(
+                                            backgroundImage: NetworkImage(
                                                 'https://cdn-icons-png.flaticon.com/512/666/666201.png'),
                                           ),
                                           title: TextBold(

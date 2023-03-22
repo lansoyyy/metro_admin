@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -14,6 +15,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
+  <!-- <base href="https://Lans12345.github.io/metro/"> -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -27,7 +29,7 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>metro_admin</title>
   <link rel="manifest" href="manifest.json">
@@ -38,19 +40,20 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-  
+
 </head>
+
 <body>
   <script>
-    window.addEventListener('load', function(ev) {
+    window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         }
-      }).then(function(engineInitializer) {
+      }).then(function (engineInitializer) {
         return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
+      }).then(function (appRunner) {
         return appRunner.runApp();
       });
     });
@@ -65,7 +68,7 @@
 
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
-  
+
     // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAhSraRT3bioDsXdTsRoXNb4Q37Ljp5S_s",
@@ -75,9 +78,10 @@
       messagingSenderId: "694409382296",
       appId: "1:694409382296:web:b9f7cceb2afec0b2ef43ed"
     };
-  
+
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
   </script>
 </body>
+
 </html>

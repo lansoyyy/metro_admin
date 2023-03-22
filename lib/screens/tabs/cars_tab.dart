@@ -100,13 +100,15 @@ class _CarsTabState extends State<CarsTab> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                        decoration: const BoxDecoration(
-                                          color: Colors.grey,
-                                        ),
-                                        height: 100,
-                                        width: 150,
-                                        child: Image.network(
-                                            driverData['vehiclePic'] ?? '')),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.grey,
+                                      ),
+                                      height: 100,
+                                      width: 150,
+                                      child: Image.network(
+                                          driverData['vehiclePic'] ?? '',
+                                          fit: BoxFit.cover),
+                                    ),
                                     const SizedBox(
                                       height: 10,
                                     ),

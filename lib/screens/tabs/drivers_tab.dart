@@ -5,6 +5,8 @@ import 'package:metro_admin/widgets/text_widget.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
 class DriversTab extends StatefulWidget {
+  const DriversTab({super.key});
+
   @override
   State<DriversTab> createState() => _DriversTabState();
 }
@@ -102,7 +104,7 @@ class _DriversTabState extends State<DriversTab> {
                                       minRadius: 50,
                                       maxRadius: 50,
                                       backgroundColor: Colors.grey,
-                                      child: Image.network(
+                                      backgroundImage: NetworkImage(
                                           '${driverData['profile_picture']}'),
                                     ),
                                     const SizedBox(

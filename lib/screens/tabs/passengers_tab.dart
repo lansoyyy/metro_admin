@@ -108,7 +108,7 @@ class _PassengersTabState extends State<PassengersTab> {
                                         minRadius: 40,
                                         maxRadius: 40,
                                         backgroundColor: Colors.grey,
-                                        child: Image.network(
+                                        backgroundImage: NetworkImage(
                                             '${passData['profilePicture']}'),
                                       ),
                                       const TabBar(
