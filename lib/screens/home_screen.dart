@@ -17,9 +17,9 @@ class HomeScreen extends StatelessWidget {
   SideMenuController page1 = SideMenuController();
 
   var drawerList = [
-    'MESSAGES',
     'DASHBOARD',
     'LIVE MAP',
+    'MESSAGES',
     'BOOKINGS',
     'SALES',
     'CARS',
@@ -29,9 +29,9 @@ class HomeScreen extends StatelessWidget {
   ];
 
   var icons = [
-    Icons.message_outlined,
     Icons.dashboard,
     Icons.location_on_rounded,
+    Icons.message_outlined,
     Icons.local_taxi,
     Icons.stacked_line_chart_sharp,
     Icons.directions_car,
@@ -39,6 +39,8 @@ class HomeScreen extends StatelessWidget {
     Icons.groups_sharp,
     Icons.settings,
   ];
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class HomeScreen extends StatelessWidget {
     ];
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppbar(page, page1),
+      appBar: customAppbar(page, page1, context),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -107,15 +109,15 @@ class HomeScreen extends StatelessWidget {
             child: PageView(
               controller: page,
               children: [
-                const MessagesTab(),
                 DashboardTab(),
                 const MapScreen(),
+                const MessagesTab(),
                 const BookingScreen(),
                 const SalesTab(),
                 const CarsTab(),
-                DriversTab(),
+                const DriversTab(),
                 const PassengersTab(),
-                SettingsTab(),
+                const SettingsTab(),
               ],
             ),
           ),
