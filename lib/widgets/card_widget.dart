@@ -3,8 +3,14 @@ import 'package:metro_admin/utils/colors.dart';
 
 class CardWidget extends StatelessWidget {
   final Widget widget;
+  double? width;
+  Color? color;
 
-  const CardWidget({required this.widget});
+  CardWidget(
+      {super.key,
+      required this.widget,
+      this.width = 250,
+      this.color = const Color(0xfffdffe4)});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +22,9 @@ class CardWidget extends StatelessWidget {
           elevation: 5,
           child: Container(
             height: 120,
-            width: 250,
+            width: width,
             decoration: BoxDecoration(
-              color: tileColorDashboard,
+              color: color,
             ),
             child: Center(child: widget),
           ),
