@@ -17,6 +17,7 @@ class _SalesTabState extends State<SalesTab> {
   List<String> filters = ['Weekly', 'Monthly', 'Yearly'];
 
   String filter = '';
+  String filterSearch = '';
   String filterType = '';
 
   List<String> days = [
@@ -63,6 +64,8 @@ class _SalesTabState extends State<SalesTab> {
   List<int> monthsValue = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   var selectedType = 0;
+
+  String id = '';
 
   myFilter() {
     print('called');
@@ -141,7 +144,7 @@ class _SalesTabState extends State<SalesTab> {
                 const SizedBox(
                   width: 20,
                 ),
-                TextBold(text: 'Receipts', fontSize: 28, color: Colors.black),
+                TextBold(text: 'Sales', fontSize: 28, color: Colors.black),
               ],
             ),
             const SizedBox(
@@ -150,14 +153,84 @@ class _SalesTabState extends State<SalesTab> {
             IndexedStack(
               index: _index,
               children: [
-                Receipts(),
-                Types(),
+                Options(),
+                filter != 'Drivers Statement' ? Receipts() : Drivers(),
+                id == '' ? Types() : const SizedBox(),
                 Data(),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget Options() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: GestureDetector(
+            onTap: (() {
+              setState(() {
+                _index = 1;
+                filter = 'Sales Statement';
+              });
+            }),
+            child: Container(
+              height: 50,
+              width: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: blueAccent, width: 1.5),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                child: ListTile(
+                  leading: Icon(
+                    Icons.folder_copy_outlined,
+                    color: blueAccent,
+                    size: 32,
+                  ),
+                  title: TextBold(
+                      text: 'Sales Statement', fontSize: 18, color: blueAccent),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: GestureDetector(
+            onTap: (() {
+              setState(() {
+                _index = 1;
+                filter = 'Drivers Statement';
+              });
+            }),
+            child: Container(
+              height: 50,
+              width: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: blueAccent, width: 1.5),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                child: ListTile(
+                  leading: Icon(
+                    Icons.folder_copy_outlined,
+                    color: blueAccent,
+                    size: 32,
+                  ),
+                  title: TextBold(
+                      text: 'Drivers Statement',
+                      fontSize: 18,
+                      color: blueAccent),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -170,7 +243,7 @@ class _SalesTabState extends State<SalesTab> {
             child: GestureDetector(
               onTap: (() {
                 setState(() {
-                  _index = 1;
+                  _index = 2;
                   filter = filters[i];
                 });
               }),
@@ -219,7 +292,7 @@ class _SalesTabState extends State<SalesTab> {
                   child: GestureDetector(
                     onTap: (() {
                       setState(() {
-                        _index = 2;
+                        _index = 3;
                         if (filter == 'Weekly') {
                           selectedType = daysValue[index];
                           filterType = days[index];
@@ -517,6 +590,168 @@ class _SalesTabState extends State<SalesTab> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget Drivers() {
+    return SingleChildScrollView(
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 3,
+                child: Container(
+                  height: 40,
+                  width: 400,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                  child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        filterSearch = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Search driver's name",
+                      hintStyle: TextStyle(fontFamily: 'QRegular'),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Drivers')
+                      .where('name',
+                          isGreaterThanOrEqualTo:
+                              toBeginningOfSentenceCase(filterSearch))
+                      .where('name',
+                          isLessThan:
+                              '${toBeginningOfSentenceCase(filterSearch)}z')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print('error');
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                      );
+                    }
+
+                    final data = snapshot.requireData;
+
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 1,
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: GridView.builder(
+                          itemCount: data.docs.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3),
+                          itemBuilder: ((context, index) {
+                            final driverData = data.docs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _index = 2;
+                                  id = driverData.id;
+                                });
+                              },
+                              child: Card(
+                                elevation: 3,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: iconColor,
+                                    borderRadius: BorderRadius.circular(7.5),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        minRadius: 50,
+                                        maxRadius: 50,
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: NetworkImage(
+                                            '${driverData['profile_picture']}'),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextBold(
+                                              text:
+                                                  'Assigned Driver: ${driverData['name']}',
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          TextBold(
+                                              text:
+                                                  'Contact #: ${driverData['contact_number']}',
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          TextBold(
+                                              text:
+                                                  '${driverData['vehicle_model']}',
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          TextBold(
+                                              text:
+                                                  'Color: ${driverData['vehicle_color']}',
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          TextBold(
+                                              text:
+                                                  'Plate #: ${driverData['plate_number']}',
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      ),
+                                      TextBold(
+                                          text: driverData['isActive']
+                                              ? 'On Duty'
+                                              : 'Off Duty',
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          })),
+                    );
+                  })
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

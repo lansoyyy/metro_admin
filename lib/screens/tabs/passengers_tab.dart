@@ -94,7 +94,7 @@ class _PassengersTabState extends State<PassengersTab> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: iconColor,
-                                    borderRadius: BorderRadius.circular(7.5),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +117,7 @@ class _PassengersTabState extends State<PassengersTab> {
                                           labelStyle: TextStyle(
                                               fontFamily: 'QBold',
                                               color: Colors.black,
-                                              fontSize: 10),
+                                              fontSize: 9),
                                           tabs: [
                                             Tab(
                                               text: 'Details',

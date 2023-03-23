@@ -114,10 +114,10 @@ class _SettingsTabState extends State<SettingsTab> {
                                               userData1 = userData;
                                             });
                                           },
-                                          leading: const CircleAvatar(
+                                          leading: CircleAvatar(
                                             maxRadius: 50,
                                             minRadius: 50,
-                                            backgroundImage: NetworkImage(
+                                            child: Image.network(
                                                 'https://cdn-icons-png.flaticon.com/512/666/666201.png'),
                                           ),
                                           title: TextBold(
@@ -207,11 +207,11 @@ class _SettingsTabState extends State<SettingsTab> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                const CircleAvatar(
+                                CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   maxRadius: 50,
                                   minRadius: 50,
-                                  backgroundImage: NetworkImage(
+                                  child: Image.network(
                                       'https://cdn-icons-png.flaticon.com/512/666/666201.png'),
                                 ),
                                 const SizedBox(
