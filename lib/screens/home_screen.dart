@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
   var drawerList = [
     'DASHBOARD',
     'LIVE MAP',
-    'MESSAGES',
     'BOOKINGS',
     'SALES',
     'CARS',
@@ -31,7 +30,6 @@ class HomeScreen extends StatelessWidget {
   var icons = [
     Icons.dashboard,
     Icons.location_on_rounded,
-    Icons.message_outlined,
     Icons.local_taxi,
     Icons.stacked_line_chart_sharp,
     Icons.directions_car,
@@ -111,13 +109,13 @@ class HomeScreen extends StatelessWidget {
               children: [
                 DashboardTab(),
                 const MapScreen(),
-                const MessagesTab(),
                 const BookingScreen(),
                 const SalesTab(),
                 const CarsTab(),
                 const DriversTab(),
                 const PassengersTab(),
                 const SettingsTab(),
+                const MessagesTab(),
               ],
             ),
           ),

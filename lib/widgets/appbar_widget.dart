@@ -11,8 +11,8 @@ PreferredSizeWidget customAppbar(page, page1, context) {
     actions: [
       IconButton(
           onPressed: (() {
-            page.jumpToPage(2);
-            page1.changePage(2);
+            page.jumpToPage(8);
+            page1.changePage(8);
           }),
           icon: const Icon(Icons.email)),
       const SizedBox(
