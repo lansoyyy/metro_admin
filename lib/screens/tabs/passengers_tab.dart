@@ -463,18 +463,16 @@ class _PassengersTabState extends State<PassengersTab> {
                                                                       rows: [
                                                                         for (int i =
                                                                                 0;
-                                                                            i <
-                                                                                100;
+                                                                            i < data.docs.length;
                                                                             i++)
-                                                                          DataRow(
-                                                                              cells: [
-                                                                                DataCell(
-                                                                                  TextBold(text: 'January 05, 2023', fontSize: 18, color: Colors.black),
-                                                                                ),
-                                                                                DataCell(
-                                                                                  TextBold(text: 'Instant Booking', fontSize: 18, color: Colors.black),
-                                                                                ),
-                                                                              ])
+                                                                          DataRow(cells: [
+                                                                            DataCell(
+                                                                              TextBold(text: DateFormat.yMMMd().add_jm().format(data.docs[i]['dateTime'].toDate()), fontSize: 18, color: Colors.black),
+                                                                            ),
+                                                                            DataCell(
+                                                                              TextBold(text: data.docs[i]['type'], fontSize: 18, color: Colors.black),
+                                                                            ),
+                                                                          ])
                                                                       ]),
                                                                 );
                                                               }),
