@@ -385,107 +385,104 @@ class _PassengersTabState extends State<PassengersTab> {
                                                   )),
                                             ),
                                           ),
-                                          Card(
-                                            elevation: 10,
-                                            child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        30, 20, 0, 20),
-                                                child: SizedBox(
-                                                  height: 500,
-                                                  width: 450,
-                                                  child: SizedBox(
-                                                    height: 400,
-                                                    child: StreamBuilder<
-                                                            QuerySnapshot>(
-                                                        stream:
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'Bookings')
-                                                                .where('userId',
-                                                                    isEqualTo:
-                                                                        id)
-                                                                .snapshots(),
-                                                        builder: (BuildContext
-                                                                context,
-                                                            AsyncSnapshot<
-                                                                    QuerySnapshot>
-                                                                snapshot) {
-                                                          if (snapshot
-                                                              .hasError) {
-                                                            print('error');
-                                                            return const Center(
-                                                                child: Text(
-                                                                    'Error'));
-                                                          }
-                                                          if (snapshot
-                                                                  .connectionState ==
-                                                              ConnectionState
-                                                                  .waiting) {
-                                                            return const Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      top: 50),
-                                                              child: Center(
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .black,
-                                                              )),
-                                                            );
-                                                          }
+                                          SingleChildScrollView(
+                                            child: Card(
+                                              elevation: 10,
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          30, 20, 0, 20),
+                                                  child: SingleChildScrollView(
+                                                    child: SizedBox(
+                                                      height: 500,
+                                                      width: 450,
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: SizedBox(
+                                                          height: 400,
+                                                          child: StreamBuilder<
+                                                                  QuerySnapshot>(
+                                                              stream: FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'Bookings')
+                                                                  .where(
+                                                                      'userId',
+                                                                      isEqualTo:
+                                                                          id)
+                                                                  .snapshots(),
+                                                              builder: (BuildContext
+                                                                      context,
+                                                                  AsyncSnapshot<
+                                                                          QuerySnapshot>
+                                                                      snapshot) {
+                                                                if (snapshot
+                                                                    .hasError) {
+                                                                  print(
+                                                                      'error');
+                                                                  return const Center(
+                                                                      child: Text(
+                                                                          'Error'));
+                                                                }
+                                                                if (snapshot
+                                                                        .connectionState ==
+                                                                    ConnectionState
+                                                                        .waiting) {
+                                                                  return const Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            top:
+                                                                                50),
+                                                                    child: Center(
+                                                                        child: CircularProgressIndicator(
+                                                                      color: Colors
+                                                                          .black,
+                                                                    )),
+                                                                  );
+                                                                }
 
-                                                          final data = snapshot
-                                                              .requireData;
-                                                          return SizedBox(
-                                                            height: 400,
-                                                            child: DataTable(
-                                                                columns: [
-                                                                  DataColumn(
-                                                                    label: TextRegular(
-                                                                        text:
-                                                                            'Date and Time',
-                                                                        fontSize:
-                                                                            14,
-                                                                        color: Colors
-                                                                            .grey),
-                                                                  ),
-                                                                  DataColumn(
-                                                                    label: TextRegular(
-                                                                        text:
-                                                                            'Ride Type',
-                                                                        fontSize:
-                                                                            14,
-                                                                        color: Colors
-                                                                            .grey),
-                                                                  ),
-                                                                ],
-                                                                rows: [
-                                                                  for (int i =
-                                                                          0;
-                                                                      i < 50;
-                                                                      i++)
-                                                                    DataRow(
-                                                                        cells: [
-                                                                          DataCell(
-                                                                            TextBold(
-                                                                                text: 'January 05, 2023',
-                                                                                fontSize: 18,
-                                                                                color: Colors.black),
-                                                                          ),
-                                                                          DataCell(
-                                                                            TextBold(
-                                                                                text: 'Instant Booking',
-                                                                                fontSize: 18,
-                                                                                color: Colors.black),
-                                                                          ),
-                                                                        ])
-                                                                ]),
-                                                          );
-                                                        }),
-                                                  ),
-                                                )),
+                                                                final data =
+                                                                    snapshot
+                                                                        .requireData;
+                                                                return SingleChildScrollView(
+                                                                  child: DataTable(
+                                                                      columns: [
+                                                                        DataColumn(
+                                                                          label: TextRegular(
+                                                                              text: 'Date and Time',
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                        DataColumn(
+                                                                          label: TextRegular(
+                                                                              text: 'Ride Type',
+                                                                              fontSize: 14,
+                                                                              color: Colors.grey),
+                                                                        ),
+                                                                      ],
+                                                                      rows: [
+                                                                        for (int i =
+                                                                                0;
+                                                                            i <
+                                                                                100;
+                                                                            i++)
+                                                                          DataRow(
+                                                                              cells: [
+                                                                                DataCell(
+                                                                                  TextBold(text: 'January 05, 2023', fontSize: 18, color: Colors.black),
+                                                                                ),
+                                                                                DataCell(
+                                                                                  TextBold(text: 'Instant Booking', fontSize: 18, color: Colors.black),
+                                                                                ),
+                                                                              ])
+                                                                      ]),
+                                                                );
+                                                              }),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )),
+                                            ),
                                           ),
                                         ],
                                       );
