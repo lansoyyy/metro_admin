@@ -371,7 +371,7 @@ class DashboardTab extends StatelessWidget {
                                             data.docs.length,
                                         subtitle:
                                             '${data1.docs.length} out of ${data.docs.length}',
-                                        title: 'Number of Rides',
+                                        title: 'Number of Bookings',
                                         icon: Icons.taxi_alert,
                                         color: blueAccent);
                                   });
@@ -541,10 +541,10 @@ class DashboardTab extends StatelessWidget {
                                                       "Number of Taxis on Duty":
                                                           data2.docs.length
                                                               .toDouble(),
-                                                      "Number of Rides": data
+                                                      "Number of Bookings": data
                                                           .docs.length
                                                           .toDouble(),
-                                                      "Number of Rides Cancelled":
+                                                      "Number of Bookings Cancelled":
                                                           data1.docs.length
                                                               .toDouble(),
                                                     },

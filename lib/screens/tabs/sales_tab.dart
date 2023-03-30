@@ -1084,7 +1084,7 @@ class _SalesTabState extends State<SalesTab> {
                           width: 225,
                           widget: ListTile(
                             title: TextBold(
-                                text: 'Number of Rides',
+                                text: 'Number of Bookings',
                                 fontSize: 16,
                                 color: blueAccent),
                             subtitle: TextBold(
