@@ -356,25 +356,18 @@ class _SalesTabState extends State<SalesTab> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: GestureDetector(
-                      onTap: (() {
-                        setState(() {
-                          print(selectedType);
-                        });
-                      }),
-                      child: Container(
-                        height: 50,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          color: blueAccent,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: TextBold(
-                              text: filterType,
-                              fontSize: 18,
-                              color: Colors.white),
-                        ),
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: blueAccent,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: TextBold(
+                            text: filterType,
+                            fontSize: 18,
+                            color: Colors.white),
                       ),
                     ),
                   ),
@@ -420,7 +413,7 @@ class _SalesTabState extends State<SalesTab> {
                                     size: 58,
                                   ),
                                   title: TextRegular(
-                                      text: 'Number of Rides',
+                                      text: 'Number of Bookings',
                                       fontSize: 14,
                                       color: blueAccent),
                                   subtitle: TextBold(
@@ -435,164 +428,299 @@ class _SalesTabState extends State<SalesTab> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: GestureDetector(
-                      onTap: (() {
-                        print(filter);
-                        print(selectedType);
-                        print(DateTime.now().year.runtimeType);
-                      }),
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: myFilter1(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasError) {
-                              print('error');
-                              return const Center(child: Text('Error'));
-                            }
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Padding(
-                                padding: EdgeInsets.only(top: 50),
-                                child: Center(
-                                    child: CircularProgressIndicator(
-                                  color: Colors.black,
-                                )),
-                              );
-                            }
-
-                            final data = snapshot.requireData;
-                            return Container(
-                              height: 90,
-                              width: 230,
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.red, width: 1.5),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: myFilter1(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('error');
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
                               child: Center(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.taxi_alert,
-                                    color: Colors.red,
-                                    size: 58,
-                                  ),
-                                  title: TextRegular(
-                                      text: 'Trips Cancelled',
-                                      fontSize: 14,
-                                      color: Colors.red),
-                                  subtitle: TextBold(
-                                      text: data.docs.length.toString(),
-                                      fontSize: 38,
-                                      color: Colors.red),
-                                ),
-                              ),
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
                             );
-                          }),
-                    ),
+                          }
+
+                          final data = snapshot.requireData;
+                          return Container(
+                            height: 90,
+                            width: 230,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.red, width: 1.5),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                leading: const Icon(
+                                  Icons.taxi_alert,
+                                  color: Colors.red,
+                                  size: 58,
+                                ),
+                                title: TextRegular(
+                                    text: 'Trips Cancelled',
+                                    fontSize: 14,
+                                    color: Colors.red),
+                                subtitle: TextBold(
+                                    text: data.docs.length.toString(),
+                                    fontSize: 38,
+                                    color: Colors.red),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: myFilter1(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            print('error');
+                            return const Center(child: Text('Error'));
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                            );
+                          }
+
+                          final data = snapshot.requireData;
+                          return Container(
+                            height: 90,
+                            width: 230,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.black, width: 1.5),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                leading: const Icon(
+                                  Icons.group,
+                                  color: Colors.black,
+                                  size: 58,
+                                ),
+                                title: TextRegular(
+                                    text: 'Total Customer',
+                                    fontSize: 14,
+                                    color: Colors.black),
+                                subtitle: TextBold(
+                                    text: data.docs.length.toString(),
+                                    fontSize: 38,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          );
+                        }),
                   ),
                 ],
               ),
             ),
-            StreamBuilder<QuerySnapshot>(
-                stream: myFilter(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    print('error');
-                    return const Center(child: Text('Error'));
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 50),
-                      child: Center(
-                          child: CircularProgressIndicator(
-                        color: Colors.black,
-                      )),
-                    );
-                  }
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StreamBuilder<QuerySnapshot>(
+                    stream: myFilter(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        print('error');
+                        return const Center(child: Text('Error'));
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                        );
+                      }
 
-                  final data = snapshot.requireData;
+                      final data = snapshot.requireData;
 
-                  print(data.docs.length);
-                  return SizedBox(
-                    width: 600,
-                    height: 500,
-                    child: GridView.builder(
-                        itemCount: data.docs.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2),
-                        itemBuilder: ((context, index) {
-                          double payments = data.docs[index]['payment'];
-                          return Card(
-                            elevation: 7,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  TextBold(
-                                      text: DateFormat.yMMMd().add_jm().format(
-                                          data.docs[index]['dateTime']
-                                              .toDate()),
-                                      fontSize: 24,
-                                      color: blueAccent),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextBold(
-                                      text: 'Drivers Name',
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  TextBold(
-                                      text: data.docs[index]['driverName'],
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextBold(
-                                      text: 'Passengers Name',
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  TextBold(
-                                      text: data.docs[index]['userName'],
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextBold(
-                                      text: 'Destination',
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  TextBold(
-                                      text: data.docs[index]['userDestination'],
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextBold(
-                                      text: 'Total Fare',
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                  TextBold(
-                                      text:
-                                          '${payments.toStringAsFixed(2)} php',
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                ],
+                      double earnings = 0;
+
+                      for (int i = 0; i < data.docs.length; i++) {
+                        earnings += data.docs[i]['payment'];
+                      }
+                      return CardWidget(
+                        width: 500,
+                        widget: ListTile(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextBold(
+                                  text: 'Total Fare Amount',
+                                  fontSize: 18,
+                                  color: blueAccent),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              LinearPercentIndicator(
+                                barRadius: const Radius.circular(100),
+                                width: 350,
+                                animation: true,
+                                lineHeight: 20.0,
+                                animationDuration: 2000,
+                                percent: 1,
+                                linearStrokeCap: LinearStrokeCap.roundAll,
+                                progressColor: Colors.greenAccent,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: TextBold(
+                                      text: "₱${earnings.toStringAsFixed(2)}",
+                                      fontSize: 16,
+                                      color: Colors.amber),
+                                ),
+                              ),
+                            ],
+                          ),
+                          leading: Container(
+                            height: 100,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: iconColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.attach_money_rounded,
+                                color: Colors.amber,
                               ),
                             ),
-                          );
-                        })),
-                  );
-                }),
+                          ),
+                        ),
+                      );
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                StreamBuilder<QuerySnapshot>(
+                    stream: myFilter(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        print('error');
+                        return const Center(child: Text('Error'));
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                        );
+                      }
+
+                      final data = snapshot.requireData;
+
+                      print(data.docs.length);
+                      return SizedBox(
+                        width: 600,
+                        height: 500,
+                        child: GridView.builder(
+                            itemCount: data.docs.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemBuilder: ((context, index) {
+                              double payments = data.docs[index]['payment'];
+                              return Card(
+                                elevation: 7,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextBold(
+                                          text: DateFormat.yMMMd()
+                                              .add_jm()
+                                              .format(data.docs[index]
+                                                      ['dateTime']
+                                                  .toDate()),
+                                          fontSize: 24,
+                                          color: blueAccent),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextBold(
+                                          text: 'Drivers Name',
+                                          fontSize: 12,
+                                          color: Colors.grey),
+                                      TextBold(
+                                          text: data.docs[index]['driverName'],
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextBold(
+                                          text: 'Passengers Name',
+                                          fontSize: 12,
+                                          color: Colors.grey),
+                                      TextBold(
+                                          text: data.docs[index]['userName'],
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextBold(
+                                          text: 'Destination',
+                                          fontSize: 12,
+                                          color: Colors.grey),
+                                      TextBold(
+                                          text: data.docs[index]
+                                              ['userDestination'],
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextBold(
+                                          text: 'Total Fare',
+                                          fontSize: 12,
+                                          color: Colors.grey),
+                                      TextBold(
+                                          text:
+                                              '${payments.toStringAsFixed(2)} php',
+                                          fontSize: 18,
+                                          color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            })),
+                      );
+                    }),
+              ],
+            ),
           ],
         ),
       ],
@@ -831,105 +959,175 @@ class _SalesTabState extends State<SalesTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('Bookings')
-                      .where('driverId', isEqualTo: id)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      print('error');
-                      return const Center(child: Text('Error'));
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.black,
-                        )),
-                      );
-                    }
+              Row(
+                children: [
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Bookings')
+                          .where('driverId', isEqualTo: id)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
 
-                    final data = snapshot.requireData;
-                    return StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('Bookings')
-                            .where('driverId', isEqualTo: id)
-                            .where('bookingStatus', isEqualTo: 'Accepted')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            print('error');
-                            return const Center(child: Text('Error'));
-                          }
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Padding(
-                              padding: EdgeInsets.only(top: 50),
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                color: Colors.black,
-                              )),
-                            );
-                          }
-
-                          final data1 = snapshot.requireData;
-                          return CardWidget(
-                            width: 360,
-                            widget: ListTile(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextBold(
-                                      text: 'Total Sales',
-                                      fontSize: 18,
-                                      color: blueAccent),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  LinearPercentIndicator(
-                                    barRadius: const Radius.circular(100),
-                                    width: 250,
-                                    animation: true,
-                                    lineHeight: 20.0,
-                                    animationDuration: 2000,
-                                    percent:
-                                        data1.docs.length / data.docs.length,
-                                    linearStrokeCap: LinearStrokeCap.roundAll,
-                                    progressColor: Colors.greenAccent,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextRegular(
-                                      text:
-                                          '${data1.docs.length} out of ${data.docs.length} bookings',
-                                      fontSize: 12,
-                                      color: Colors.grey),
-                                ],
-                              ),
-                              leading: Container(
-                                height: 100,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                  color: iconColor,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.stacked_line_chart_sharp,
+                        final data = snapshot.requireData;
+                        return StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Bookings')
+                                .where('driverId', isEqualTo: id)
+                                .where('bookingStatus', isEqualTo: 'Accepted')
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                print('error');
+                                return const Center(child: Text('Error'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Center(
+                                      child: CircularProgressIndicator(
                                     color: Colors.black,
+                                  )),
+                                );
+                              }
+
+                              final data1 = snapshot.requireData;
+                              return CardWidget(
+                                width: 225,
+                                widget: ListTile(
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextBold(
+                                          text: 'Total Sales',
+                                          fontSize: 18,
+                                          color: blueAccent),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      LinearPercentIndicator(
+                                        barRadius: const Radius.circular(100),
+                                        width: 100,
+                                        animation: true,
+                                        lineHeight: 20.0,
+                                        animationDuration: 2000,
+                                        percent: data1.docs.length /
+                                            data.docs.length,
+                                        linearStrokeCap:
+                                            LinearStrokeCap.roundAll,
+                                        progressColor: Colors.greenAccent,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextRegular(
+                                          text:
+                                              '${data1.docs.length} out of ${data.docs.length} bookings',
+                                          fontSize: 12,
+                                          color: Colors.grey),
+                                    ],
                                   ),
+                                  leading: Container(
+                                    height: 100,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      color: iconColor,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.stacked_line_chart_sharp,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      }),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Bookings')
+                          .where('driverId', isEqualTo: id)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+
+                        double earnings = 0;
+
+                        for (int i = 0; i < data.docs.length; i++) {
+                          earnings += data.docs[i]['payment'];
+                        }
+
+                        return CardWidget(
+                          color: Colors.white,
+                          width: 225,
+                          widget: ListTile(
+                            trailing: Icon(
+                              Icons.keyboard_double_arrow_up,
+                              color: greenAccent,
+                            ),
+                            title: TextBold(
+                                text: 'Total Earnings',
+                                fontSize: 16,
+                                color: blueAccent),
+                            subtitle: TextBold(
+                                text: "₱${earnings.toStringAsFixed(2)}",
+                                fontSize: 18,
+                                color: blueAccent),
+                            leading: Container(
+                              height: 100,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                color: iconColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.attach_money_rounded,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
-                          );
-                        });
-                  }),
+                          ),
+                        );
+                      }),
+                ],
+              ),
               const SizedBox(
                 height: 20,
               ),
