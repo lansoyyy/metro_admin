@@ -576,7 +576,7 @@ class _SalesTabState extends State<SalesTab> {
                                 animation: true,
                                 lineHeight: 20.0,
                                 animationDuration: 2000,
-                                percent: 1,
+                                percent: data.docs.isEmpty ? 0 : 1,
                                 linearStrokeCap: LinearStrokeCap.roundAll,
                                 progressColor: Colors.greenAccent,
                               ),
@@ -984,108 +984,6 @@ class _SalesTabState extends State<SalesTab> {
                         }
 
                         final data = snapshot.requireData;
-                        return StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection('Bookings')
-                                .where('driverId', isEqualTo: id)
-                                .where('bookingStatus', isEqualTo: 'Accepted')
-                                .snapshots(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<QuerySnapshot> snapshot) {
-                              if (snapshot.hasError) {
-                                print('error');
-                                return const Center(child: Text('Error'));
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Padding(
-                                  padding: EdgeInsets.only(top: 50),
-                                  child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  )),
-                                );
-                              }
-
-                              final data1 = snapshot.requireData;
-                              return CardWidget(
-                                width: 225,
-                                widget: ListTile(
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextBold(
-                                          text: 'Total Sales',
-                                          fontSize: 18,
-                                          color: blueAccent),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      LinearPercentIndicator(
-                                        barRadius: const Radius.circular(100),
-                                        width: 100,
-                                        animation: true,
-                                        lineHeight: 20.0,
-                                        animationDuration: 2000,
-                                        percent: data1.docs.length /
-                                            data.docs.length,
-                                        linearStrokeCap:
-                                            LinearStrokeCap.roundAll,
-                                        progressColor: Colors.greenAccent,
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextRegular(
-                                          text:
-                                              '${data1.docs.length} out of ${data.docs.length} bookings',
-                                          fontSize: 12,
-                                          color: Colors.grey),
-                                    ],
-                                  ),
-                                  leading: Container(
-                                    height: 100,
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                      color: iconColor,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.stacked_line_chart_sharp,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                      }),
-                  StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Bookings')
-                          .where('driverId', isEqualTo: id)
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError) {
-                          print('error');
-                          return const Center(child: Text('Error'));
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Padding(
-                            padding: EdgeInsets.only(top: 50),
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              color: Colors.black,
-                            )),
-                          );
-                        }
-
-                        final data = snapshot.requireData;
 
                         double earnings = 0;
 
@@ -1094,21 +992,41 @@ class _SalesTabState extends State<SalesTab> {
                         }
 
                         return CardWidget(
-                          color: Colors.white,
-                          width: 225,
+                          width: 450,
                           widget: ListTile(
-                            trailing: Icon(
-                              Icons.keyboard_double_arrow_up,
-                              color: greenAccent,
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextBold(
+                                    text: 'Total Earnings',
+                                    fontSize: 18,
+                                    color: blueAccent),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                LinearPercentIndicator(
+                                  barRadius: const Radius.circular(100),
+                                  width: 300,
+                                  animation: true,
+                                  lineHeight: 20.0,
+                                  animationDuration: 2000,
+                                  percent: data.docs.isEmpty ? 0 : 1,
+                                  linearStrokeCap: LinearStrokeCap.roundAll,
+                                  progressColor: Colors.greenAccent,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: TextBold(
+                                      text: "₱${earnings.toStringAsFixed(2)}",
+                                      fontSize: 18,
+                                      color: Colors.grey),
+                                ),
+                              ],
                             ),
-                            title: TextBold(
-                                text: 'Total Earnings',
-                                fontSize: 16,
-                                color: blueAccent),
-                            subtitle: TextBold(
-                                text: "₱${earnings.toStringAsFixed(2)}",
-                                fontSize: 18,
-                                color: blueAccent),
                             leading: Container(
                               height: 100,
                               width: 60,
